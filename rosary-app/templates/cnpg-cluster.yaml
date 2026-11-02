@@ -1,0 +1,46 @@
+{{- if .Values.cnpg.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: db
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  instances: {{ .Values.cnpg.instances }}
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.cnpg.storage.size | quote }}
+      {{- if .Values.cnpg.storage.storageClass }}
+      storageClassName: {{ .Values.cnpg.storage.storageClass | quote }}
+      {{- end }}
+      volumeMode: Filesystem
+  bootstrap:
+    initdb:
+      database: {{ .Values.cnpg.database | quote }}
+      owner: {{ .Values.cnpg.owner | quote }}
+      secret:
+        name: {{ .Values.cnpg.secretName | quote }}
+{{- if .Values.cnpg.testingDatabase.enabled }}
+---
+# Throwaway database for the backend test suite. RefreshDatabase drops and
+# re-migrates it on every run, so it must never be the app's database.
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: db-testing
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  cluster:
+    name: db
+  name: testing
+  owner: {{ .Values.cnpg.owner | quote }}
+  databaseReclaimPolicy: delete
+{{- end }}
+{{- end }}

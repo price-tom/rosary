@@ -1,0 +1,46 @@
+{
+	"name": "rosary",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"start": "npm install && vite dev --host 0.0.0.0",
+		"build": "vite build",
+		"build:sentry": "SENTRY_RELEASE=true vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"test": "vitest",
+		"generate-pwa-assets": "pwa-assets-generator"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.61.1",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@vite-pwa/assets-generator": "^1.0.2",
+		"eslint": "^10.4.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.17.1",
+		"globals": "^17.6.0",
+		"jsdom": "^29.1.1",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.0.1",
+		"svelte": "^5.55.9",
+		"svelte-check": "^4.4.8",
+		"tailwindcss": "^4.3.0",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.59.4",
+		"vite": "^8.0.14",
+		"vite-plugin-pwa": "^1.3.0",
+		"vitest": "^4.1.7"
+	},
+	"type": "module",
+	"dependencies": {
+		"@tailwindcss/vite": "^4.3.0"
+	},
+	"overrides": {
+		"cookie": "^0.7.0",
+		"serialize-javascript": "^7.0.3"
+	}
+}

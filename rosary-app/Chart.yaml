@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rosary-app
+description: Rosary - Laravel API, queue worker, scheduler, Redis and a CloudNativePG database
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

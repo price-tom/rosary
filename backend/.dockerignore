@@ -1,0 +1,22 @@
+.dockerignore
+.git
+.gitignore
+.gitattributes
+.DS_Store
+.idea
+.vscode
+*.swp
+
+public/hot
+public/storage
+
+# Ignore all storage except structure
+storage/app/**
+!storage/app/.gitignore
+storage/logs/**
+!storage/logs/.gitignore
+storage/framework/**
+!storage/framework/.gitignore
+
+vendor
+node_modules

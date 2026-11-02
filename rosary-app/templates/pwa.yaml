@@ -1,0 +1,83 @@
+{{- if .Values.pwa.enabled }}
+# Dev-only container for the SvelteKit PWA. devspace syncs ./frontend into it
+# and runs the Vite dev server; production builds are deployed to Cloudflare.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rosary-app.fullname" . }}-pwa
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: pwa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "rosary-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: pwa
+  template:
+    metadata:
+      annotations:
+        secrets.doppler.com/reload: "true"
+      labels:
+        {{- include "rosary-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: pwa
+    spec:
+      containers:
+        - name: pwa
+          image: "{{ .Values.pwa.image.repository }}:{{ .Values.pwa.image.tag }}"
+          imagePullPolicy: {{ .Values.pwa.image.pullPolicy }}
+          workingDir: /app
+          # Replaced by `npm run start` when devspace takes over the pod
+          command: ["sleep", "infinity"]
+          envFrom:
+            - secretRef:
+                name: {{ .Values.existingSecret }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          {{- if .Values.pwa.nodeModules.enabled }}
+          volumeMounts:
+            - name: node-modules
+              mountPath: /app/node_modules
+      volumes:
+        - name: node-modules
+          persistentVolumeClaim:
+            claimName: {{ include "rosary-app.fullname" . }}-pwa-node-modules
+          {{- end }}
+---
+{{- if .Values.pwa.nodeModules.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rosary-app.fullname" . }}-pwa-node-modules
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pwa.nodeModules.size | quote }}
+  {{- with .Values.pwa.nodeModules.storageClass }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+---
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rosary-app.fullname" . }}-pwa
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: pwa
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "rosary-app.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: pwa
+{{- end }}

@@ -1,0 +1,13 @@
+{
+	skip_install_trust
+	auto_https disable_redirects
+	frankenphp
+}
+
+:80 {
+	root public/
+
+	php_server {
+		try_files {path} index.php
+	}
+}

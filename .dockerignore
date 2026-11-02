@@ -1,0 +1,33 @@
+.dockerignore
+.git
+.gitignore
+.gitattributes
+
+.zed
+.idea
+.vscode
+.DS_Store
+*.swp
+
+frontend/node_modules
+frontend/build
+
+# Ignore all storage except structure
+backend/storage/app/**
+!backend/storage/app/.gitignore
+backend/storage/logs/**
+!backend/storage/logs/.gitignore
+backend/storage/framework/**
+!backend/storage/framework/.gitignore
+
+backend/public/hot
+backend/public/storage
+backend/vendor
+backend/node_modules
+
+# Not used by docker/app/Dockerfile (it only copies backend/ and docker/app/);
+# keeps the build context small for in-cluster devspace builds.
+frontend/.svelte-kit
+.claude
+.devspace
+dump.sql

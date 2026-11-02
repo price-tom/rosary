@@ -1,0 +1,13 @@
+.dockerignore
+.git
+.gitignore
+.gitattributes
+.DS_Store
+.idea
+.vscode
+*.swp
+
+node_modules
+build
+.svelte-kit
+npm_out.log

@@ -1,0 +1,24 @@
+# Development environment overrides, layered on values.yaml by devspace.yaml.
+# Hostnames and the Doppler config are set per developer in devspace.yaml.
+
+# Use the primary image; devspace syncs ./backend over /app
+image:
+  repository: ghcr.io/price-tom/rosary-laravel
+  tag: "stable"
+
+# Tailnet-only access instead of public domains
+httpRoute:
+  enabled: false
+tailscale:
+  enabled: true
+
+pwa:
+  enabled: true
+
+cnpg:
+  testingDatabase:
+    enabled: true
+
+redis:
+  persistence:
+    enabled: false

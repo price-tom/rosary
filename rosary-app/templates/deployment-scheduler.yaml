@@ -1,0 +1,49 @@
+{{- if .Values.scheduler.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rosary-app.fullname" . }}-scheduler
+  labels:
+    {{- include "rosary-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: scheduler
+spec:
+  # Exactly one scheduler, or scheduled commands run twice
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "rosary-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: scheduler
+  template:
+    metadata:
+      annotations:
+        secrets.doppler.com/reload: "true"
+      labels:
+        {{- include "rosary-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: scheduler
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rosary-app.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}-scheduler
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["php", "artisan", "schedule:work"]
+          envFrom:
+            - secretRef:
+                name: {{ .Values.existingSecret }}
+          {{- with .Values.scheduler.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+{{- end }}

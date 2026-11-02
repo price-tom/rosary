@@ -1,0 +1,175 @@
+version: v2beta1
+name: rosary-dev
+
+vars:
+  # Doppler config the environment's secrets are synced from
+  DOPPLER_CONFIG:
+    source: env
+    default: dev
+
+deployments:
+  rosary-app:
+    helm:
+      chart:
+        name: ./rosary-app
+      valuesFiles:
+        - ./rosary-app/values-dev.yaml
+      values:
+        doppler:
+          config: ${DOPPLER_CONFIG}
+        # https://<namespace>-api.<tailnet>.ts.net and https://<namespace>.<tailnet>.ts.net
+        tailscale:
+          apiHostname: ${DEVSPACE_NAMESPACE}-api
+          pwaHostname: ${DEVSPACE_NAMESPACE}
+
+dev:
+  api:
+    labelSelector:
+      app.kubernetes.io/component: web
+    sync:
+      - path: ./backend:/app
+        excludePaths:
+          - vendor/
+          - node_modules/
+          - storage/
+          - public/storage/
+          - public/hot
+        onUpload:
+          exec:
+            - command: |-
+                composer install --no-interaction
+              onChange:
+                - composer.json
+                - composer.lock
+            - command: |-
+                php artisan octane:reload
+    ports:
+      - port: "8000:8000"
+    terminal:
+      enabled: true
+      disableReplace: true
+      command: bash
+    ssh:
+      enabled: true
+
+  worker:
+    labelSelector:
+      app.kubernetes.io/component: worker
+    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90"]
+    sync:
+      - path: ./backend:/app
+        excludePaths:
+          - vendor/
+          - node_modules/
+          - storage/
+        onUpload:
+          exec:
+            - command: |-
+                composer install --no-interaction
+              onChange:
+                - composer.json
+                - composer.lock
+          # Queue workers keep code in memory, so restart them on changes
+          restartContainer: true
+
+  scheduler:
+    labelSelector:
+      app.kubernetes.io/component: scheduler
+    # schedule:work runs each task in a fresh process, so synced code is
+    # picked up without a restart
+    sync:
+      - path: ./backend:/app
+        excludePaths:
+          - vendor/
+          - node_modules/
+          - storage/
+
+  pwa:
+    labelSelector:
+      app.kubernetes.io/component: pwa
+    command: ["npm", "run", "start"]
+    sync:
+      - path: ./frontend:/app
+        startContainer: true
+        excludePaths:
+          - node_modules/
+          - .svelte-kit/
+          - build/
+        # npm install in the pod rewrites these; don't sync that back
+        downloadExcludePaths:
+          - package-lock.json
+
+pipelines:
+  dev: |-
+    create_deployments --all
+    start_dev --all
+
+commands:
+  # Opens the project's Rex session, creating it and its tabs on the first run
+  rex:
+    command: |-
+      session=$(rex ls --json | jq -r '[.sessions[] | select(.label == "rosary")][0].session_id // empty')
+      if [ -n "$session" ]; then
+        echo "Rex session rosary already exists: $session"
+      else
+        created=$(rex new rosary -c "$PWD" --window Dev --keep-open --json -- devspace dev)
+        session=$(printf '%s' "$created" | jq -er '.session_id')
+        dev_block=$(printf '%s' "$created" | jq -er '.initial_windows[0].block_ids[0]')
+        rex window new -s "$session" Tests -c "$PWD/frontend" --keep-open --focus=false --json -- npm run test > /dev/null
+        rex window new -s "$session" Claude -c "$PWD" --focus=false --json -- claude > /dev/null
+        echo "Created Rex session rosary: $session"
+      fi
+      # Switching needs Remote Control, in Rex's settings under Rex Server
+      rex do session.select session_id="$session" || echo "Open the rosary session from the Rex app to view it"
+
+  test-laravel:
+    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan test
+
+  test-pwa:
+    command: devspace enter --label-selector=app.kubernetes.io/component=pwa -- npm run test -- --run
+
+  format:
+    command: |-
+      echo "Formatting Laravel (Pint)..."
+      devspace enter --label-selector=app.kubernetes.io/component=web -- ./vendor/bin/pint
+      echo "Formatting PWA (Prettier)..."
+      devspace enter --label-selector=app.kubernetes.io/component=pwa -- npm run format
+
+  db-migrate:
+    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan migrate
+
+  db-seed:
+    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan db:seed
+
+  # Read sign-in codes from the database, for when email isn't set up
+  auth-code:
+    command: |-
+      kubectl --context ${DEVSPACE_CONTEXT} -n ${DEVSPACE_NAMESPACE} exec db-1 -c postgres -- psql -U postgres -d rosary -c "select email, code from auth_codes where expiry > now()"
+
+  dump-db:
+    command: kubectl exec -c postgres db-1 -- pg_dump -d rosary --clean --if-exists -f /run/dump.sql
+
+  restore-db:
+    command: cat dump.sql | kubectl exec -i svc/db-rw -n ${DEVSPACE_NAMESPACE} -- psql -U postgres -d rosary
+
+  restore-db-prod:
+    command: cat dump.sql | kubectl exec -i svc/db-rw -n rosary -c postgres -- psql -U postgres -d rosary
+
+  build-pwa-assets:
+    command: npx @swoff/assets --source ./frontend/static/logo.svg --app-name "Rosary" --short-name Rosary --description "Rosary" --theme-color "#4b4b4b" --bg-color "#efefef" --splash --dark-mode-theme "#cdcdcd" --dark-mode-bg "#1e1e1e" --categories "utility"
+
+  deploy-pwa:
+    command: cd frontend && doppler run --config prd -- npm run build && npx wrangler deploy
+
+  build-api:
+    command: gh workflow run backend-build.yml && gh run watch
+
+  deploy-api:
+    command: |-
+      git fetch && git pull
+      BRANCH=$(git branch --show-current)
+      COMMIT_SHA=$(git rev-parse --short=7 HEAD)
+      TAG="sha-$COMMIT_SHA"
+
+      echo "--> Deploying $TAG to production..."
+      doppler run --config prd -- sh -c "helm upgrade --install rosary-app ./rosary-app --namespace rosary --set doppler.config=prd --set \"httpRoute.hostnames[0]=\$APP_NAME\" --set image.tag=$TAG"

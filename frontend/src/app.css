@@ -1,0 +1,383 @@
+@import 'tailwindcss';
+
+/* Default theme (Catppuccin Mocha) */
+@theme {
+	--color-rosewater: hsl(10deg, 56%, 91%);
+	--color-flamingo: hsl(0deg, 59%, 88%);
+	--color-pink: hsl(316deg, 72%, 86%);
+	--color-mauve: hsl(267deg, 84%, 81%);
+	--color-red: hsl(343deg, 81%, 75%);
+	--color-maroon: hsl(350deg, 65%, 77%);
+	--color-peach: hsl(23deg, 92%, 75%);
+	--color-yellow: hsl(40.91deg, 94.29%, 58.82%);
+	--color-green: hsl(115deg, 54%, 76%);
+	--color-teal: hsl(170deg, 57%, 73%);
+	--color-sky: hsl(189deg, 71%, 73%);
+	--color-sapphire: hsl(199deg, 76%, 69%);
+	--color-blue: hsl(217deg, 92%, 76%);
+	--color-lavender: hsl(232deg, 97%, 85%);
+	--color-text: hsl(226.15deg, 63.93%, 88.04%);
+	--color-subtext-1: hsl(227deg, 35%, 80%);
+	--color-subtext-0: hsl(228deg, 24%, 72%);
+	--color-overlay-2: hsl(228deg, 17%, 64%);
+	--color-overlay-1: hsl(230deg, 13%, 55%);
+	--color-overlay-0: hsl(231deg, 11%, 47%);
+	--color-surface-2: hsl(233deg, 12%, 39%);
+	--color-surface-1: hsl(234deg, 13%, 31%);
+	--color-surface-0: hsl(237deg, 16%, 23%);
+	--color-base: hsl(240deg, 21%, 15%);
+	--color-mantle: hsl(240deg, 21%, 12%);
+	--color-crust: hsl(240deg, 23%, 9%);
+
+	/* Shadow utilities for darkest theme */
+	--shadow-sm: 0 1px 2px 0 rgb(17 17 27 / 0.5);
+	--shadow: 0 1px 3px 0 rgb(17 17 27 / 0.5), 0 1px 2px -1px rgb(17 17 27 / 0.5);
+	--shadow-md: 0 4px 6px -1px rgb(17 17 27 / 0.5), 0 2px 4px -2px rgb(17 17 27 / 0.5);
+	--shadow-lg: 0 10px 15px -3px rgb(17 17 27 / 0.6), 0 4px 6px -4px rgb(17 17 27 / 0.5);
+	--shadow-xl: 0 20px 25px -5px rgb(17 17 27 / 0.6), 0 8px 10px -6px rgb(17 17 27 / 0.5);
+	--shadow-2xl: 0 25px 50px -12px rgb(17 17 27 / 0.7);
+}
+
+/* Catppuccin Latte - Light theme */
+[data-theme='latte'] {
+	--color-rosewater: hsl(11deg, 59%, 67%);
+	--color-flamingo: hsl(0deg, 60%, 67%);
+	--color-pink: hsl(316deg, 73%, 69%);
+	--color-mauve: hsl(266deg, 85%, 58%);
+	--color-red: hsl(347deg, 87%, 44%);
+	--color-maroon: hsl(355deg, 76%, 59%);
+	--color-peach: hsl(22deg, 99%, 52%);
+	--color-yellow: hsl(35deg, 77%, 49%);
+	--color-green: hsl(109deg, 58%, 40%);
+	--color-teal: hsl(183deg, 74%, 35%);
+	--color-sky: hsl(197deg, 97%, 46%);
+	--color-sapphire: hsl(189deg, 70%, 42%);
+	--color-blue: hsl(220deg, 91%, 54%);
+	--color-lavender: hsl(231deg, 97%, 72%);
+	--color-text: hsl(234deg, 16%, 35%);
+	--color-subtext-1: hsl(233deg, 13%, 41%);
+	--color-subtext-0: hsl(233deg, 10%, 47%);
+	--color-overlay-2: hsl(232deg, 10%, 53%);
+	--color-overlay-1: hsl(231deg, 10%, 59%);
+	--color-overlay-0: hsl(228deg, 11%, 65%);
+	--color-surface-2: hsl(227deg, 12%, 71%);
+	--color-surface-1: hsl(225deg, 14%, 77%);
+	--color-surface-0: hsl(223deg, 16%, 83%);
+	--color-base: hsl(220deg, 23%, 95%);
+	--color-mantle: hsl(220deg, 22%, 92%);
+	--color-crust: hsl(220deg, 21%, 89%);
+
+	/* Shadow utilities for light theme */
+	--shadow-sm: 0 1px 2px 0 rgb(76 79 105 / 0.1);
+	--shadow: 0 1px 3px 0 rgb(76 79 105 / 0.15), 0 1px 2px -1px rgb(76 79 105 / 0.1);
+	--shadow-md: 0 4px 6px -1px rgb(76 79 105 / 0.15), 0 2px 4px -2px rgb(76 79 105 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(76 79 105 / 0.2), 0 4px 6px -4px rgb(76 79 105 / 0.15);
+	--shadow-xl: 0 20px 25px -5px rgb(76 79 105 / 0.2), 0 8px 10px -6px rgb(76 79 105 / 0.15);
+	--shadow-2xl: 0 25px 50px -12px rgb(76 79 105 / 0.25);
+}
+
+/* Catppuccin Frappé - Medium contrast theme */
+[data-theme='frappe'] {
+	--color-rosewater: hsl(10deg, 57%, 88%);
+	--color-flamingo: hsl(0deg, 59%, 88%);
+	--color-pink: hsl(316deg, 73%, 86%);
+	--color-mauve: hsl(277deg, 59%, 76%);
+	--color-red: hsl(359deg, 68%, 71%);
+	--color-maroon: hsl(0deg, 59%, 73%);
+	--color-peach: hsl(20deg, 79%, 70%);
+	--color-yellow: hsl(40deg, 62%, 73%);
+	--color-green: hsl(96deg, 44%, 68%);
+	--color-teal: hsl(172deg, 39%, 65%);
+	--color-sky: hsl(189deg, 48%, 73%);
+	--color-sapphire: hsl(199deg, 55%, 69%);
+	--color-blue: hsl(222deg, 74%, 74%);
+	--color-lavender: hsl(239deg, 66%, 84%);
+	--color-text: hsl(227deg, 70%, 87%);
+	--color-subtext-1: hsl(229deg, 43%, 80%);
+	--color-subtext-0: hsl(230deg, 34%, 74%);
+	--color-overlay-2: hsl(230deg, 23%, 63%);
+	--color-overlay-1: hsl(231deg, 17%, 57%);
+	--color-overlay-0: hsl(230deg, 13%, 51%);
+	--color-surface-2: hsl(231deg, 12%, 43%);
+	--color-surface-1: hsl(232deg, 12%, 36%);
+	--color-surface-0: hsl(229deg, 13%, 32%);
+	--color-base: hsl(229deg, 19%, 28%);
+	--color-mantle: hsl(231deg, 19%, 24%);
+	--color-crust: hsl(229deg, 20%, 20%);
+
+	/* Shadow utilities for medium contrast theme */
+	--shadow-sm: 0 1px 2px 0 rgb(41 44 60 / 0.4);
+	--shadow: 0 1px 3px 0 rgb(41 44 60 / 0.4), 0 1px 2px -1px rgb(41 44 60 / 0.4);
+	--shadow-md: 0 4px 6px -1px rgb(41 44 60 / 0.4), 0 2px 4px -2px rgb(41 44 60 / 0.4);
+	--shadow-lg: 0 10px 15px -3px rgb(41 44 60 / 0.5), 0 4px 6px -4px rgb(41 44 60 / 0.4);
+	--shadow-xl: 0 20px 25px -5px rgb(41 44 60 / 0.5), 0 8px 10px -6px rgb(41 44 60 / 0.4);
+	--shadow-2xl: 0 25px 50px -12px rgb(41 44 60 / 0.6);
+}
+
+/* Catppuccin Macchiato - Dark theme */
+[data-theme='macchiato'] {
+	--color-rosewater: hsl(10deg, 58%, 88%);
+	--color-flamingo: hsl(0deg, 58%, 88%);
+	--color-pink: hsl(316deg, 74%, 85%);
+	--color-mauve: hsl(267deg, 83%, 80%);
+	--color-red: hsl(351deg, 74%, 73%);
+	--color-maroon: hsl(355deg, 71%, 75%);
+	--color-peach: hsl(22deg, 92%, 71%);
+	--color-yellow: hsl(41deg, 70%, 78%);
+	--color-green: hsl(106deg, 57%, 72%);
+	--color-teal: hsl(169deg, 61%, 70%);
+	--color-sky: hsl(189deg, 59%, 73%);
+	--color-sapphire: hsl(199deg, 66%, 69%);
+	--color-blue: hsl(220deg, 83%, 75%);
+	--color-lavender: hsl(238deg, 82%, 83%);
+	--color-text: hsl(227deg, 68%, 88%);
+	--color-subtext-1: hsl(228deg, 39%, 80%);
+	--color-subtext-0: hsl(228deg, 29%, 73%);
+	--color-overlay-2: hsl(230deg, 19%, 61%);
+	--color-overlay-1: hsl(230deg, 15%, 55%);
+	--color-overlay-0: hsl(231deg, 12%, 48%);
+	--color-surface-2: hsl(233deg, 12%, 39%);
+	--color-surface-1: hsl(233deg, 16%, 32%);
+	--color-surface-0: hsl(230deg, 17%, 26%);
+	--color-base: hsl(232deg, 23%, 18%);
+	--color-mantle: hsl(233deg, 23%, 15%);
+	--color-crust: hsl(232deg, 26%, 12%);
+
+	/* Shadow utilities for dark theme */
+	--shadow-sm: 0 1px 2px 0 rgb(24 24 37 / 0.5);
+	--shadow: 0 1px 3px 0 rgb(24 24 37 / 0.5), 0 1px 2px -1px rgb(24 24 37 / 0.5);
+	--shadow-md: 0 4px 6px -1px rgb(24 24 37 / 0.5), 0 2px 4px -2px rgb(24 24 37 / 0.5);
+	--shadow-lg: 0 10px 15px -3px rgb(24 24 37 / 0.6), 0 4px 6px -4px rgb(24 24 37 / 0.5);
+	--shadow-xl: 0 20px 25px -5px rgb(24 24 37 / 0.6), 0 8px 10px -6px rgb(24 24 37 / 0.5);
+	--shadow-2xl: 0 25px 50px -12px rgb(24 24 37 / 0.7);
+}
+
+/* Catppuccin Mocha - Darkest theme */
+[data-theme='mocha'] {
+	--color-rosewater: hsl(10deg, 56%, 91%);
+	--color-flamingo: hsl(0deg, 59%, 88%);
+	--color-pink: hsl(316deg, 72%, 86%);
+	--color-mauve: hsl(267deg, 84%, 81%);
+	--color-red: hsl(343deg, 81%, 75%);
+	--color-maroon: hsl(350deg, 65%, 77%);
+	--color-peach: hsl(23deg, 92%, 75%);
+	--color-yellow: hsl(41deg, 86%, 83%);
+	--color-green: hsl(115deg, 54%, 76%);
+	--color-teal: hsl(170deg, 57%, 73%);
+	--color-sky: hsl(189deg, 71%, 73%);
+	--color-sapphire: hsl(199deg, 76%, 69%);
+	--color-blue: hsl(217deg, 92%, 76%);
+	--color-lavender: hsl(232deg, 97%, 85%);
+	--color-text: hsl(226deg, 64%, 88%);
+	--color-subtext-1: hsl(227deg, 35%, 80%);
+	--color-subtext-0: hsl(228deg, 24%, 72%);
+	--color-overlay-2: hsl(228deg, 17%, 64%);
+	--color-overlay-1: hsl(230deg, 13%, 55%);
+	--color-overlay-0: hsl(231deg, 11%, 47%);
+	--color-surface-2: hsl(233deg, 12%, 39%);
+	--color-surface-1: hsl(234deg, 13%, 31%);
+	--color-surface-0: hsl(237deg, 16%, 23%);
+	--color-base: hsl(240deg, 21%, 15%);
+	--color-mantle: hsl(240deg, 21%, 12%);
+	--color-crust: hsl(240deg, 23%, 9%);
+
+	/* Shadow utilities for darkest theme */
+	--shadow-sm: 0 1px 2px 0 rgb(17 17 27 / 0.5);
+	--shadow: 0 1px 3px 0 rgb(17 17 27 / 0.5), 0 1px 2px -1px rgb(17 17 27 / 0.5);
+	--shadow-md: 0 4px 6px -1px rgb(17 17 27 / 0.5), 0 2px 4px -2px rgb(17 17 27 / 0.5);
+	--shadow-lg: 0 10px 15px -3px rgb(17 17 27 / 0.6), 0 4px 6px -4px rgb(17 17 27 / 0.5);
+	--shadow-xl: 0 20px 25px -5px rgb(17 17 27 / 0.6), 0 8px 10px -6px rgb(17 17 27 / 0.5);
+	--shadow-2xl: 0 25px 50px -12px rgb(17 17 27 / 0.7);
+}
+
+[data-theme='glodark'] {
+	--color-rosewater: hsl(10deg, 56%, 91%);
+	--color-flamingo: hsl(0deg, 59%, 88%);
+	--color-pink: hsl(316deg, 72%, 86%);
+	--color-mauve: hsl(267deg, 84%, 81%);
+	--color-red: hsl(343deg, 81%, 75%);
+	--color-maroon: hsl(350deg, 65%, 77%);
+	--color-peach: hsl(23deg, 92%, 75%);
+	--color-yellow: hsl(40.91deg, 94.29%, 58.82%);
+	--color-green: hsl(115deg, 54%, 76%);
+	--color-teal: hsl(170deg, 57%, 73%);
+	--color-sky: hsl(189deg, 71%, 73%);
+	--color-sapphire: hsl(199deg, 76%, 69%);
+	--color-blue: hsl(217deg, 92%, 76%);
+	--color-lavender: hsl(232deg, 97%, 85%);
+	--color-text: hsl(226.15deg, 63.93%, 88.04%);
+	--color-subtext-1: hsl(227deg, 35%, 80%);
+	--color-subtext-0: hsl(228deg, 24%, 72%);
+	--color-overlay-2: hsl(228deg, 17%, 64%);
+	--color-overlay-1: hsl(230deg, 13%, 55%);
+	--color-overlay-0: hsl(231deg, 11%, 47%);
+	--color-surface-2: hsl(233deg, 12%, 39%);
+	--color-surface-1: hsl(234deg, 13%, 31%);
+	--color-surface-0: hsl(240deg, 19.15%, 9.22%);
+	--color-base: hsl(240deg, 21%, 15%);
+	--color-mantle: hsl(240deg, 21%, 12%);
+	--color-crust: hsl(240deg, 23%, 9%);
+
+	/* Shadow utilities for darkest theme */
+	--shadow-sm: 0 1px 2px 0 rgb(17 17 27 / 0.5);
+	--shadow: 0 1px 3px 0 rgb(17 17 27 / 0.5), 0 1px 2px -1px rgb(17 17 27 / 0.5);
+	--shadow-md: 0 4px 6px -1px rgb(17 17 27 / 0.5), 0 2px 4px -2px rgb(17 17 27 / 0.5);
+	--shadow-lg: 0 10px 15px -3px rgb(17 17 27 / 0.6), 0 4px 6px -4px rgb(17 17 27 / 0.5);
+	--shadow-xl: 0 20px 25px -5px rgb(17 17 27 / 0.6), 0 8px 10px -6px rgb(17 17 27 / 0.5);
+	--shadow-2xl: 0 25px 50px -12px rgb(17 17 27 / 0.7);
+}
+
+html {
+	color-scheme: light dark;
+	background-color: var(--color-base);
+}
+
+body {
+	font-family: 'Quicksand', sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+}
+
+button {
+	@apply outline-none;
+}
+
+button.rounded-button {
+	@apply flex rounded-md items-center justify-center font-semibold bg-text/70 px-4 py-2 text-base disabled:bg-overlay-0 disabled:text-overlay-2 shadow disabled:shadow-none hover:text-base hover:bg-text focus-visible:bg-text focus:outline-1;
+}
+
+button.text {
+	@apply py-2;
+}
+
+input {
+	@apply rounded text-text block w-full px-3 py-1.5 outline-none focus-visible:ring-2 focus-visible:ring-text/50 focus:outline-1;
+}
+
+/* View Transitions */
+@media (prefers-reduced-motion: no-preference) {
+	/* Default Fade (Tabs / Siblings) */
+	:root[data-transition='fade'] ::view-transition-group(root) {
+		animation-duration: 200ms;
+	}
+
+	:root[data-transition='fade'] ::view-transition-old(root) {
+		animation: 200ms ease-out both fade-out;
+	}
+
+	:root[data-transition='fade'] ::view-transition-new(root) {
+		animation: 200ms ease-out both fade-in;
+	}
+
+	/* Forward (Push) */
+	:root[data-transition='forward'] ::view-transition-old(root) {
+		animation: 500ms cubic-bezier(0.32, 0.72, 0, 1) both slide-to-left;
+	}
+
+	:root[data-transition='forward'] ::view-transition-new(root) {
+		animation: 500ms cubic-bezier(0.32, 0.72, 0, 1) both slide-from-right;
+		z-index: 2;
+		box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+	}
+
+	/* Back (Pop) */
+	:root[data-transition='back'] ::view-transition-old(root) {
+		animation: 500ms cubic-bezier(0.32, 0.72, 0, 1) both slide-to-right;
+		z-index: 2;
+		box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+	}
+
+	:root[data-transition='back'] ::view-transition-new(root) {
+		animation: 500ms cubic-bezier(0.32, 0.72, 0, 1) both slide-from-left;
+	}
+}
+
+/* Fallback for initial load or no data attribute */
+::view-transition-old(root) {
+	animation: 250ms cubic-bezier(0.32, 0.72, 0, 1) both fade-out;
+}
+
+::view-transition-new(root) {
+	animation: 250ms cubic-bezier(0.32, 0.72, 0, 1) both fade-in;
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes slide-from-right {
+	from {
+		transform: translateX(100%);
+	}
+
+	to {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slide-to-left {
+	from {
+		transform: translateX(0);
+	}
+
+	to {
+		transform: translateX(-30%);
+		filter: brightness(0.9);
+	}
+}
+
+@keyframes slide-to-right {
+	from {
+		transform: translateX(0);
+	}
+
+	to {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes slide-from-left {
+	from {
+		transform: translateX(-30%);
+		filter: brightness(0.9);
+	}
+
+	to {
+		transform: translateX(0);
+	}
+}
+
+@media (prefers-reduced-motion) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}
+
+@utility interactive {
+	@apply cursor-pointer shadow-sm rounded-sm;
+}
+
+@utility interactive-2 {
+	@apply cursor-pointer;
+	@apply flex flex-col items-center justify-center rounded-xl border;
+	@apply py-1 px-3;
+}

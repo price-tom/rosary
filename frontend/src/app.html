@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" class="h-full">
+	<head>
+		<style>
+			:root,
+			[data-theme='glodark'],
+			[data-theme='mocha'] {
+				--color-base: hsl(240deg, 21%, 15%);
+				--color-text: hsl(226deg, 64%, 88%);
+			}
+			[data-theme='latte'] {
+				--color-base: hsl(220deg, 23%, 95%);
+				--color-text: hsl(234deg, 16%, 35%);
+			}
+			[data-theme='frappe'] {
+				--color-base: hsl(229deg, 19%, 28%);
+				--color-text: hsl(227deg, 70%, 87%);
+			}
+			[data-theme='macchiato'] {
+				--color-base: hsl(232deg, 23%, 18%);
+				--color-text: hsl(227deg, 68%, 88%);
+			}
+			html,
+			body {
+				background-color: var(--color-base);
+				color: var(--color-text);
+				min-height: 100vh;
+				min-height: 100dvh;
+			}
+			/* Safe area handling for iOS status bar and home indicator */
+			body {
+				padding-top: env(safe-area-inset-top);
+				padding-bottom: env(safe-area-inset-bottom);
+				padding-left: env(safe-area-inset-left);
+				padding-right: env(safe-area-inset-right);
+			}
+			/* Plain CSS because app.css hasn't loaded yet. Matches LoadingBlocker.svelte. */
+			#boot-splash {
+				position: fixed;
+				inset: 0;
+				z-index: 50;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: var(--color-base);
+				color: var(--color-text);
+			}
+			#boot-splash .spinner {
+				box-sizing: border-box;
+				width: 2rem;
+				height: 2rem;
+				border: 4px solid currentColor;
+				border-top-color: transparent;
+				border-radius: 50%;
+				animation: boot-spin 1s linear infinite;
+			}
+			/* Out of flow, so messages can't move the spinner off center */
+			#boot-steps {
+				position: absolute;
+				top: calc(50% + 2rem);
+				left: 0;
+				right: 0;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				text-align: center;
+				font-size: 0.875rem;
+				line-height: 1.5;
+			}
+			#boot-steps .done {
+				opacity: 0.6;
+			}
+			@keyframes boot-spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+		<script>
+			;(function () {
+				const stored = localStorage.getItem('theme') || 'system'
+				let theme = stored
+				if (theme === 'system') {
+					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+					theme = prefersDark ? 'mocha' : 'latte'
+				}
+				document.documentElement.setAttribute('data-theme', theme)
+			})()
+		</script>
+		<title>Rosary</title>
+		<meta charset="utf-8" />
+		<meta name="apple-mobile-web-app-title" content="Rosary" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+			rel="stylesheet"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+		/>
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+		<meta name="msapplication-tap-highlight" content="no" />
+
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link
+			rel="apple-touch-icon"
+			href="/dark-apple-touch-icon.png"
+			media="(prefers-color-scheme: dark)"
+		/>
+		<link rel="manifest" href="/manifest.json" />
+
+		<!-- Updated theme-color values to match Catppuccin Base / Latte theme hex values -->
+		<meta name="theme-color" content="#eff1f5" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)" />
+
+		<meta property="og:image" content="/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-2048x2732.png"
+			media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-1668x2224.png"
+			media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-1536x2048.png"
+			media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-1125x2436.png"
+			media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-1242x2208.png"
+			media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-750x1334.png"
+			media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="/splash-640x1136.png"
+			media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+		/>
+
+		%sveltekit.head%
+	</head>
+
+	<body class="w-full text-text" style="background-color: var(--color-base)">
+		<div style="display: contents">%sveltekit.body%</div>
+		<div id="boot-splash">
+			<div class="spinner"></div>
+			<ul id="boot-steps"></ul>
+		</div>
+	</body>
+</html>

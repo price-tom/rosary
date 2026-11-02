@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <!--
+            Connection defaults: CI and the dev pod supply their own host and
+            credentials through the environment, which take precedence.
+        -->
+        <env name="DB_CONNECTION" value="pgsql"/>
+        <env name="DB_HOST" value="db"/>
+        <env name="DB_PORT" value="5432"/>
+        <env name="DB_USERNAME" value="database"/>
+        <env name="DB_PASSWORD" value="database"/>
+        <env name="REDIS_HOST" value="redis"/>
+        <env name="REDIS_PORT" value="6379"/>
+        <!--
+            Always forced, whatever the environment says. <server> is used
+            because Laravel reads $_SERVER before $_ENV, and forced <env>
+            entries don't touch $_SERVER. RefreshDatabase wipes DB_DATABASE,
+            so it must never be the app's database.
+        -->
+        <server name="APP_ENV" value="testing"/>
+        <server name="DB_DATABASE" value="testing"/>
+        <server name="REDIS_DB" value="1"/>
+        <server name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="CACHE_STORE" value="array"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="MAIL_MAILER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="PULSE_ENABLED" value="false"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
+        <server name="DOTENV_ENABLED" value="false"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="display_startup_errors" value="1"/>
+        <ini name="memory_limit" value="512M"/>
+    </php>
+</phpunit>
