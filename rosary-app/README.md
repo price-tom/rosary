@@ -1,6 +1,6 @@
 # rosary-app Helm chart
 
-Installs the Rosary backend: Laravel API (Octane), queue worker, scheduler, Redis and a CloudNativePG Postgres cluster. Secrets come from Doppler via the Doppler operator.
+Installs the Rosary backend: Laravel API (Octane), Redis and a CloudNativePG Postgres cluster. Secrets come from Doppler via the Doppler operator.
 
 Production is installed with `helm`; development environments are installed by `devspace dev`, which uses this chart with `values-dev.yaml`.
 
@@ -49,9 +49,7 @@ The database starts empty. Run migrations with `php artisan migrate --force` in 
 ## Development
 
 ```sh
-devspace use namespace <your-name>
-devspace dev                          # Doppler config defaults to dev
-devspace dev --var DOPPLER_CONFIG=dev_alice
+devspace dev                          # namespace joseph, Doppler config dev_joseph
 ```
 
 This deploys the chart with `values-dev.yaml`, which:

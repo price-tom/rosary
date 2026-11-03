@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/price-tom/rosary-laravel
+  repository: ghcr.io/price-tom/rosary
   # "stable" is a moving tag, so always pull to pick up new builds on upgrade/restart.
   # For reproducible deploys, pin a commit tag instead: --set image.tag=<short-sha>
   pullPolicy: Always
@@ -127,34 +127,6 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-worker:
-    enabled: true
-    name: "worker-pvc"
-    accessMode: "ReadWriteOnce"
-    size: "10Gi"
-    storageClass: "local-path"
-
-worker:
-  enabled: true
-  replicaCount: 1
-
-  # --timeout must stay below terminationGracePeriodSeconds so a job can finish on shutdown.
-  command:
-    - php
-    - artisan
-    - queue:work
-    - --tries=3
-    - --timeout=90
-
-  terminationGracePeriodSeconds: 100
-
-  resources: {}
-
-# Runs `php artisan schedule:work` (routes/console.php). Always a single replica.
-scheduler:
-  enabled: true
-  resources: {}
 
 existingSecret: "app-secret"
 

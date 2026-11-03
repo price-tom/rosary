@@ -1,0 +1,26 @@
+# Overrides for a local kind cluster, layered on values-dev.yaml by the `local`
+# devspace profile. kind has no Doppler or Tailscale operator, so
+# scripts/kind-setup.sh syncs app-secret and db-secret from the dev_local config
+# and the app is reached through port forwards.
+
+# Built locally and loaded into kind
+image:
+  repository: docker.io/library/rosary-laravel
+  tag: "local"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+doppler:
+  enabled: false
+
+tailscale:
+  enabled: false
+
+cnpg:
+  storage:
+    storageClass: "standard"
+
+pwa:
+  nodeModules:
+    enabled: true

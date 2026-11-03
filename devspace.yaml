@@ -5,10 +5,15 @@ vars:
   # Doppler config the environment's secrets are synced from
   DOPPLER_CONFIG:
     source: env
-    default: dev
+    default: dev_joseph
+  # Set here so nothing depends on the namespace selected in kubeconfig
+  DEV_NAMESPACE:
+    source: env
+    default: joseph
 
 deployments:
   rosary-app:
+    namespace: ${DEV_NAMESPACE}
     helm:
       chart:
         name: ./rosary-app
@@ -19,11 +24,12 @@ deployments:
           config: ${DOPPLER_CONFIG}
         # https://<namespace>-api.<tailnet>.ts.net and https://<namespace>.<tailnet>.ts.net
         tailscale:
-          apiHostname: ${DEVSPACE_NAMESPACE}-api
-          pwaHostname: ${DEVSPACE_NAMESPACE}
+          apiHostname: ${DEV_NAMESPACE}-api
+          pwaHostname: ${DEV_NAMESPACE}
 
 dev:
   api:
+    namespace: ${DEV_NAMESPACE}
     labelSelector:
       app.kubernetes.io/component: web
     sync:
@@ -34,6 +40,8 @@ dev:
           - storage/
           - public/storage/
           - public/hot
+          # Built into the image and gitignored, so sync would delete it from the pod
+          - public/frankenphp-worker.php
         onUpload:
           exec:
             - command: |-
@@ -52,39 +60,8 @@ dev:
     ssh:
       enabled: true
 
-  worker:
-    labelSelector:
-      app.kubernetes.io/component: worker
-    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90"]
-    sync:
-      - path: ./backend:/app
-        excludePaths:
-          - vendor/
-          - node_modules/
-          - storage/
-        onUpload:
-          exec:
-            - command: |-
-                composer install --no-interaction
-              onChange:
-                - composer.json
-                - composer.lock
-          # Queue workers keep code in memory, so restart them on changes
-          restartContainer: true
-
-  scheduler:
-    labelSelector:
-      app.kubernetes.io/component: scheduler
-    # schedule:work runs each task in a fresh process, so synced code is
-    # picked up without a restart
-    sync:
-      - path: ./backend:/app
-        excludePaths:
-          - vendor/
-          - node_modules/
-          - storage/
-
   pwa:
+    namespace: ${DEV_NAMESPACE}
     labelSelector:
       app.kubernetes.io/component: pwa
     command: ["npm", "run", "start"]
@@ -98,6 +75,32 @@ dev:
         # npm install in the pod rewrites these; don't sync that back
         downloadExcludePaths:
           - package-lock.json
+
+profiles:
+  # Local kind cluster, active whenever the kube context is kind. Uses its own
+  # ports so it can run alongside other projects. scripts/kind-setup.sh prepares it.
+  - name: local
+    activation:
+      - vars:
+          DEVSPACE_CONTEXT: kind
+    patches:
+      - op: replace
+        path: vars.DOPPLER_CONFIG.default
+        value: dev_local
+      - op: replace
+        path: vars.DEV_NAMESPACE.default
+        value: rosary-local
+      - op: add
+        path: deployments.rosary-app.helm.valuesFiles
+        value: ./rosary-app/values-local.yaml
+      - op: replace
+        path: dev.api.ports
+        value:
+          - port: "8001:8000"
+      - op: add
+        path: dev.pwa.ports
+        value:
+          - port: "5174:8000"
 
 pipelines:
   dev: |-
@@ -123,34 +126,34 @@ commands:
       rex do session.select session_id="$session" || echo "Open the rosary session from the Rex app to view it"
 
   test-laravel:
-    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan test
+    command: devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=web -- php artisan test
 
   test-pwa:
-    command: devspace enter --label-selector=app.kubernetes.io/component=pwa -- npm run test -- --run
+    command: devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=pwa -- npm run test -- --run
 
   format:
     command: |-
       echo "Formatting Laravel (Pint)..."
-      devspace enter --label-selector=app.kubernetes.io/component=web -- ./vendor/bin/pint
+      devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=web -- ./vendor/bin/pint
       echo "Formatting PWA (Prettier)..."
-      devspace enter --label-selector=app.kubernetes.io/component=pwa -- npm run format
+      devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=pwa -- npm run format
 
   db-migrate:
-    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan migrate
+    command: devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=web -- php artisan migrate
 
   db-seed:
-    command: devspace enter --label-selector=app.kubernetes.io/component=web -- php artisan db:seed
+    command: devspace enter -n ${DEV_NAMESPACE} --label-selector=app.kubernetes.io/component=web -- php artisan db:seed
 
   # Read sign-in codes from the database, for when email isn't set up
   auth-code:
     command: |-
-      kubectl --context ${DEVSPACE_CONTEXT} -n ${DEVSPACE_NAMESPACE} exec db-1 -c postgres -- psql -U postgres -d rosary -c "select email, code from auth_codes where expiry > now()"
+      kubectl --context ${DEVSPACE_CONTEXT} -n ${DEV_NAMESPACE} exec db-1 -c postgres -- psql -U postgres -d rosary -c "select email, code from auth_codes where expiry > now()"
 
   dump-db:
-    command: kubectl exec -c postgres db-1 -- pg_dump -d rosary --clean --if-exists -f /run/dump.sql
+    command: kubectl -n ${DEV_NAMESPACE} exec -c postgres db-1 -- pg_dump -d rosary --clean --if-exists -f /run/dump.sql
 
   restore-db:
-    command: cat dump.sql | kubectl exec -i svc/db-rw -n ${DEVSPACE_NAMESPACE} -- psql -U postgres -d rosary
+    command: cat dump.sql | kubectl exec -i svc/db-rw -n ${DEV_NAMESPACE} -- psql -U postgres -d rosary
 
   restore-db-prod:
     command: cat dump.sql | kubectl exec -i svc/db-rw -n rosary -c postgres -- psql -U postgres -d rosary

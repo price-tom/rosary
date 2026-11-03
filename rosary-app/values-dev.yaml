@@ -3,7 +3,7 @@
 
 # Use the primary image; devspace syncs ./backend over /app
 image:
-  repository: ghcr.io/price-tom/rosary-laravel
+  repository: ghcr.io/price-tom/rosary
   tag: "stable"
 
 # Tailnet-only access instead of public domains

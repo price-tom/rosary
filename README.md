@@ -4,7 +4,7 @@ A starter application with user sign-in and nothing else: a Laravel API and a Sv
 
 ## Tech Stack
 
-- **Backend**: Laravel 13 on Octane/FrankenPHP with PostgreSQL, Redis and a queue worker
+- **Backend**: Laravel 13 on Octane/FrankenPHP with PostgreSQL and Redis
 - **Frontend**: SvelteKit (Svelte 5) SPA, installable as a PWA, with Tailwind CSS
 - **Authentication**: Laravel Sanctum session cookies, Google OAuth through Socialite, and emailed sign-in codes
 - **Infrastructure**: Kubernetes with Helm and DevSpace, Doppler for secrets, Cloudflare for the frontend
@@ -36,12 +36,21 @@ Development runs in Kubernetes through DevSpace, with files synced into the pods
 ```bash
 brew install devspace kubectl tailscale dopplerhq/cli/doppler
 doppler login
-devspace use namespace <your-name>   # never `rosary`, which is production
-devspace dev                         # Doppler config defaults to `dev`
-devspace dev --var DOPPLER_CONFIG=dev_alice
+devspace use context callandor
+devspace dev                         # namespace `joseph`, Doppler config `dev_joseph`
 ```
 
 The PWA is at `https://<namespace>.<tailnet>.ts.net` and the API at `https://<namespace>-api.<tailnet>.ts.net`. See `rosary-app/README.md` for cluster prerequisites.
+
+To use a local [kind](https://kind.sigs.k8s.io/) cluster, which uses namespace `rosary-local` and Doppler config `dev_local`:
+
+```bash
+scripts/kind-setup.sh                # build the image and sync secrets
+devspace use context kind
+devspace dev
+```
+
+The PWA is at `http://localhost:5174` and the API at `http://localhost:8001`. After changing `dev_local`, run `scripts/kind-setup.sh secrets`.
 
 ## Task Commands
 

@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Rosary is a starter application that provides user sign-in. The monorepo contains:
 
-- `backend/`: Laravel 13 API on Octane/FrankenPHP, with Postgres, Redis and a queue worker
+- `backend/`: Laravel 13 API on Octane/FrankenPHP, with Postgres and Redis
 - `frontend/`: SvelteKit (Svelte 5 runes) SPA, shipped as a PWA on Cloudflare
-- `rosary-app/`: Helm chart for the API, worker, scheduler, Redis and CloudNativePG Postgres
+- `rosary-app/`: Helm chart for the API, Redis and CloudNativePG Postgres
 
 ## Commands
 
@@ -41,7 +41,7 @@ Tests must only ever run against the `testing` database, because `RefreshDatabas
 
 - **HTTP:** API controllers in `app/Http/Controllers/Api` stay thin and delegate to `app/Actions` (single-purpose classes).
 - **Auth:** the SPA uses a Sanctum session cookie with CSRF. Users sign in with an emailed code (`AuthCodeController`) or Google OAuth (`GoogleAuthController`). There are no passwords, and bearer tokens are deliberately ignored in `AppServiceProvider`. Only requests from `SANCTUM_STATEFUL_DOMAINS` get a session, so `/api/auth/verify-code` refuses any others.
-- **Queues:** the worker runs `queue:work`, which keeps code in memory, as does Octane. DevSpace restarts or reloads them when synced files change.
+- **Background work:** the chart runs no queue worker or scheduler, so queued jobs and scheduled tasks won't run. Octane keeps code in memory, and DevSpace reloads it when synced files change.
 
 ## Frontend architecture
 
