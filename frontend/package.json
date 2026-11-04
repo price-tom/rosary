@@ -37,6 +37,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cloudflare/realtimekit": "^2.0.4",
+		"@cloudflare/realtimekit-ui": "^2.0.3",
 		"@tailwindcss/vite": "^4.3.0"
 	},
 	"overrides": {

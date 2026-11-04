@@ -7,6 +7,7 @@ type RouteDefinition = {
 }
 export const routes = {
 	home: { href: '/a/home', label: 'Home' },
+	room: { href: '/a/room', label: 'Prayer room' },
 	login: { href: '/a/hello', label: 'Login' }
 } as const satisfies Record<string, RouteDefinition>
 

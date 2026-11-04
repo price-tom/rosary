@@ -41,4 +41,13 @@ return [
         'key' => env('CLOUDFLARE_KEY'),
     ],
 
+    // Cloudflare RealtimeKit, for the shared prayer room
+    'realtimekit' => [
+        'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+        'app_id' => env('REALTIMEKIT_APP_ID'),
+        'token' => env('REALTIMEKIT_API_TOKEN'),
+        'meeting_id' => env('PRAYER_ROOM_MEETING_ID'),
+        'preset' => env('PRAYER_ROOM_PRESET', 'group_call_participant'),
+    ],
+
 ];

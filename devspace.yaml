@@ -51,14 +51,14 @@ dev:
                 - composer.lock
             - command: |-
                 php artisan octane:reload
-    ports:
-      - port: "8000:8000"
     terminal:
       enabled: true
       disableReplace: true
       command: bash
     ssh:
       enabled: true
+      # Fixed so the kind and remote sessions can run at the same time
+      localPort: 11401
 
   pwa:
     namespace: ${DEV_NAMESPACE}
@@ -94,6 +94,9 @@ profiles:
         path: deployments.rosary-app.helm.valuesFiles
         value: ./rosary-app/values-local.yaml
       - op: replace
+        path: dev.api.ssh.localPort
+        value: 11402
+      - op: add
         path: dev.api.ports
         value:
           - port: "8001:8000"

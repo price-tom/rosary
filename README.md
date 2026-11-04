@@ -24,6 +24,7 @@ Create a Doppler project named `rosary-app`, or change `doppler.project` in `ros
 | `REDIS_HOST`, `QUEUE_CONNECTION` | Redis connection and queue driver |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Google OAuth; the redirect is `<APP_URL>/auth/google/callback` |
 | `MAIL_FROM_ADDRESS`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_KEY` | Sender address and Cloudflare credentials for sign-in emails |
+| `REALTIMEKIT_APP_ID`, `REALTIMEKIT_API_TOKEN`, `PRAYER_ROOM_MEETING_ID` | Cloudflare RealtimeKit app, an API token with the Realtime permission, and the shared prayer room's meeting |
 
 The frontend needs `VITE_API_BASE_URL`, the API's URL, at build time.
 

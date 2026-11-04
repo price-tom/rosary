@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthCodeController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PrayerRoomController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication: the SPA signs in with a session cookie
@@ -17,4 +18,5 @@ Route::middleware('throttle:send-code')->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('me', [AuthController::class, 'me'])->name('users.me');
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::post('prayer-room/join', [PrayerRoomController::class, 'join'])->name('prayer-room.join');
 });
